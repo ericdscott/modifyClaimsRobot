@@ -11,7 +11,8 @@ There is an additional specification that identifies variables bound by the quer
     PREFIX http: <http://www.w3.org/2011/http#>
     prefix wdt: <http://www.wikidata.org/prop/direct/>
     prefix wd: <http://www.wikidata.org/entity/>
-Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath ?dt 
+
+Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath 
                 ?alreadyAdded
 Where
 {
@@ -20,7 +21,6 @@ Where
         rdfs:label ?title. Filter (Lang(?title) = "en")
     ?deadGuy rdfs:label ?deadGuyLabel. Filter (Lang(?deadGuyLabel) = "en")
     ?deadGuy ?dateOfDeathP ?dateOfDeath.
-    Bind (DataType(?dateOfDeath) as ?dt)
     Filter (?dateOfDeath < "1910-01-01T00:00:00Z"^^xsd:dateTime)
     Optional
     {

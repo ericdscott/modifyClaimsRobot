@@ -1,33 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-r"""
-TODO: rewrite this.
-
-Template harvesting script.
-
-Usage:
-
-* python pwb.py harvest_template -transcludes:"..." \
-    template_parameter PID [template_parameter PID]
-* python pwb.py harvest_template [generators] -template:"..." \
-    template_parameter PID [template_parameter PID]
-
-This will work on all pages that transclude the template in the article
-namespace
-
-These command line parameters can be used to specify which pages to work on:
-
-&params;
-
-Examples:
-
-    python pwb.py harvest_template -lang:nl -cat:Sisoridae -namespace:0 \
-        -template:"Taxobox straalvinnige" orde P70 familie P71 geslacht P74
+"""
+TODO: flesh this out
 
 """
-#
-# (C) Multichill, Amir, 2013
-# (C) Pywikibot team, 2013-2014
 #
 # Distributed under the terms of MIT License.
 #
@@ -238,7 +214,7 @@ def anachronisticScreenwriters(*args):
     prefix wdt: <http://www.wikidata.org/prop/direct/>
     prefix wd: <http://www.wikidata.org/entity/>
 
-Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath ?dt 
+Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath
                 ?alreadyAdded
 Where
 {
@@ -247,7 +223,6 @@ Where
         rdfs:label ?title. Filter (Lang(?title) = "en")
     ?deadGuy rdfs:label ?deadGuyLabel. Filter (Lang(?deadGuyLabel) = "en")
     ?deadGuy ?dateOfDeathP ?dateOfDeath.
-    Bind (DataType(?dateOfDeath) as ?dt)
     Filter (?dateOfDeath < "1910-01-01T00:00:00Z"^^xsd:dateTime)
     Optional
     {
