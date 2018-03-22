@@ -127,7 +127,6 @@ class ModifyClaimsRobot(WikidataBot):
             c_target = qNumberFor (str(claim.getTarget()))
             return (b_target == c_target)
 
-        
         offendingClaims = [c 
                            for c in contents['claims'][self.sourcePredicate]
                            if matchesBinding(c)]
@@ -186,15 +185,12 @@ def processQuery(sparqlQuery,
         entry = bindings.get(item, [])
         bindings[idFor(item)] = entry + [binding]
 
-
     itemPageFor = lambda id: pywikibot.ItemPage(repo, id)
-    pywikibot.output("keys:%s" % bindings.keys())
     itemsPages = (itemPageFor(id)
                    for id in bindings.keys()
                    if pywikibot.ItemPage.is_valid_id(id))
     for binding in bindings.values():
         print pywikibot.output(binding)
-    #return (pg.WikidataPageFromItemGenerator(itemsPages, site), bindings)
     return (itemsPages, bindings)
 
 
@@ -214,24 +210,24 @@ def anachronisticScreenwriters(*args):
     prefix wdt: <http://www.wikidata.org/prop/direct/>
     prefix wd: <http://www.wikidata.org/entity/>
 
-Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath
-                ?alreadyAdded
-Where
-{
-    Bind (wdt:P570 as ?dateOfDeathP)
-    ?movie wdt:P58 ?deadGuy;
-        rdfs:label ?title. Filter (Lang(?title) = "en")
-    ?deadGuy rdfs:label ?deadGuyLabel. Filter (Lang(?deadGuyLabel) = "en")
-    ?deadGuy ?dateOfDeathP ?dateOfDeath.
-    Filter (?dateOfDeath < "1910-01-01T00:00:00Z"^^xsd:dateTime)
-    Optional
+    Select Distinct ?movie ?title ?deadGuy ?deadGuyLabel ?dateOfDeath
+                    ?alreadyAdded
+    Where
     {
-      ?movie wdt:P1877 ?deadGuy;
-      Bind (true as ?alreadyAdded)
+      Bind (wdt:P570 as ?dateOfDeathP)
+      ?movie wdt:P58 ?deadGuy;
+          rdfs:label ?title. Filter (Lang(?title) = "en")
+      ?deadGuy rdfs:label ?deadGuyLabel. Filter (Lang(?deadGuyLabel) = "en")
+      ?deadGuy ?dateOfDeathP ?dateOfDeath.
+      Filter (?dateOfDeath < "1910-01-01T00:00:00Z"^^xsd:dateTime)
+      Optional
+      {
+        ?movie wdt:P1877 ?deadGuy;
+        Bind (true as ?alreadyAdded)
+      }
     }
-}
-Limit 100
-"""
+    Limit 100
+    """
 
     editParameters = {
         "itemVar" : "?movie",
@@ -247,24 +243,17 @@ Limit 100
                 % binding['deadGuyLabel']
                 + "Should be 'after a work by'")
 
-
     itemPage_generator, bindings = processQuery(
         anachronistic_screenwriters_query, 
         itemVar=editParameters['itemVar'])
-    
     
     bot = ModifyClaimsRobot(itemPage_generator, 
                             bindings, 
                             commentForBinding,
                             **editParameters)
     bot.run()
-    #result = gen.handleArg("-sparql:%s" % query)
-    #bot = ModifyClaimsRobot(gen.getCombinedGenerator())
-    
-    
-
 
 
 if __name__ == "__main__":
-    pywikibot.output("argv going in:%s" % sys.argv)
+
     anachronisticScreenwriters()
